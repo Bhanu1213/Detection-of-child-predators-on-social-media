@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Child Predator Detection System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-content">
+        <h1>Child Predator Detection System</h1>
+        <p class="subtitle">Cyber Safety Intelligence & Conversation Analysis</p>
+    </div>
+</header>
+
+<!-- MAIN -->
+<main class="main-container {% if summary_result %}analyzed{% endif %}">
+
+
+    <!-- INPUT PANEL -->
+    <section class="panel input-panel">
+        <h2 class="panel-title">Analyze Conversation</h2>
+
+        <p class="panel-desc">
+            Submit conversation data from multiple sources for intelligent safety analysis.
+        </p>
+
+        <form method="POST" enctype="multipart/form-data" class="analysis-form">
+
+            <div class="form-group">
+                <label class="label">Paste Conversation Text</label>
+                <textarea name="chat_text"
+                          placeholder="Paste chat messages here (one message per line)..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="label">Upload Conversation File</label>
+                <input type="file" name="file">
+            </div>
+
+            <p class="formats">
+                Supported formats: TXT, CSV, PDF, DOCX, LOG, JPG, PNG
+            </p>
+
+            <button type="submit" class="analyze-btn">
+                Run Analysis
+            </button>
+        </form>
+    </section>
+
+    <!-- RESULT PANEL -->
+    {% if summary_result %}
+    <section class="panel result-panel active">
+
+        <div class="result-info">
+            <h2 class="panel-title">Analysis Summary</h2>
+
+            <div class="stats">
+                <p><strong>Total Messages:</strong> {{ summary_result.total }}</p>
+                <p><strong>Predator Messages:</strong> {{ summary_result.predator_count }}</p>
+                <p><strong>Non-Predator Messages:</strong> {{ summary_result.non_predator_count }}</p>
+            </div>
+
+            <div class="decision
+                {% if summary_result.predator_percent > summary_result.non_predator_percent %}
+                    danger
+                {% else %}
+                    safe
+                {% endif %}
+            ">
+                {{ summary_result.final_decision }}
+            </div>
+        </div>
+
+        <div class="visuals">
+            <div class="meter predator">
+                <div class="circle">
+                    <span>{{ summary_result.predator_percent }}%</span>
+                </div>
+                <span class="meter-label">Predator Risk</span>
+            </div>
+
+            <div class="meter safe">
+                <div class="circle">
+                    <span>{{ summary_result.non_predator_percent }}%</span>
+                </div>
+                <span class="meter-label">Safe Content</span>
+            </div>
+        </div>
+
+    </section>
+    {% endif %}
+
+</main>
+
+</body>
+</html>
